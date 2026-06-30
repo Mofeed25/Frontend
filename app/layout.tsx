@@ -1,15 +1,13 @@
-import Sidebar from "@/components/Sidebar";
+import "../styles/globals.css";
 
-export default function RootLayout({ children }: any) {
-
+export default function RootLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     return (
         <html>
-            <body>
-                <div className="flex min-h-screen">
-                    <Sidebar />
-                    <div className="flex-1">{children}</div>
-                </div>
-            </body>
+            <body>{children}</body>
         </html>
     );
 }
