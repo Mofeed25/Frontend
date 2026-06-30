@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { sendMessage } from "@/lib/api";
-import { getToken } from "@/lib/auth";
-import { getTenant } from "@/lib/tenant";
+import { sendMessage } from "../../lib/api";
+import { getToken } from "../../lib/auth";
+import { getTenant } from "../../lib/tenant";
 
 export default function Chat() {
 
@@ -12,19 +12,29 @@ export default function Chat() {
 
     async function send() {
 
-        const res = await sendMessage(
-            msg,
-            getToken() || undefined,
-            getTenant()
-        );
+        try {
 
-        setChat([
-            ...chat,
-            { role: "user", text: msg },
-            { role: "ai", text: res.answer }
-        ]);
+            const res = await sendMessage(
+                msg,
+                getToken() || undefined,
+                getTenant()
+            );
 
-        setMsg("");
+            setChat((prev) => [
+                ...prev,
+                { role: "user", text: msg },
+                { role: "ai", text: res?.answer || "لا يوجد رد" }
+            ]);
+
+            setMsg("");
+
+        } catch (err) {
+
+            setChat((prev) => [
+                ...prev,
+                { role: "system", text: "حدث خطأ في الاتصال بالسيرفر" }
+            ]);
+        }
     }
 
     return (
@@ -48,9 +58,13 @@ export default function Chat() {
                 className="mt-6 w-full p-3 bg-[#0F2A4A]"
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
+                placeholder="اكتب رسالتك..."
             />
 
-            <button className="bg-[#00C27C] px-4 py-2 mt-3" onClick={send}>
+            <button
+                className="bg-[#00C27C] px-4 py-2 mt-3"
+                onClick={send}
+            >
                 إرسال
             </button>
 
