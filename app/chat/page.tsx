@@ -14,58 +14,61 @@ export default function Chat() {
 
         if (!msg.trim()) return;
 
-        try {
+        const res = await sendMessage(
+            msg,
+            getToken() || undefined,
+            getTenant()
+        );
 
-            const res = await sendMessage(
-                msg,
-                getToken() || undefined,
-                getTenant()
-            );
+        setChat((prev) => [
+            ...prev,
+            { role: "user", text: msg },
+            { role: "ai", text: res?.answer || "لا يوجد رد" }
+        ]);
 
-            setChat((prev) => [
-                ...prev,
-                { role: "user", text: msg },
-                { role: "ai", text: res?.answer || "لا يوجد رد" }
-            ]);
-
-            setMsg("");
-
-        } catch (err) {
-
-            setChat((prev) => [
-                ...prev,
-                { role: "system", text: "حدث خطأ في الاتصال بالسيرفر" }
-            ]);
-        }
+        setMsg("");
     }
 
     return (
-        <div className="p-8">
+        <div style={{ padding: 24 }}>
 
-            <h1 className="text-[#00D4FF]">
-                AI Assistant
+            <h1 style={{ color: "#00D4FF", fontSize: 22 }}>
+                SolarMindAI Assistant
             </h1>
 
-            <div className="space-y-3 mt-6">
+            <p style={{ opacity: 0.7 }}>
+                مرحباً بك، أنا مستشارك المالي والإداري الذكي
+            </p>
 
+            <div style={{ marginTop: 20 }}>
                 {chat.map((c, i) => (
-                    <div key={i} className="card">
+                    <div key={i} className="card" style={{ marginBottom: 10 }}>
                         <b>{c.role}</b>: {c.text}
                     </div>
                 ))}
-
             </div>
 
             <input
-                className="mt-6 w-full p-3 bg-[#0F2A4A]"
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
-                placeholder="اكتب رسالتك..."
+                placeholder="اكتب سؤالك..."
+                style={{
+                    width: "100%",
+                    padding: 12,
+                    marginTop: 20,
+                    background: "#0B1220",
+                    border: "1px solid #1C2A3A",
+                    color: "white"
+                }}
             />
 
             <button
-                className="bg-[#00C27C] px-4 py-2 mt-3"
                 onClick={send}
+                style={{
+                    marginTop: 12,
+                    background: "#00C27C",
+                    padding: "10px 20px"
+                }}
             >
                 إرسال
             </button>
