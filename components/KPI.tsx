@@ -1,14 +1,10 @@
 export default function KPI({ title, value }: any) {
-
     return (
         <div className="card">
-
-            <h3 className="text-gray-300">{title}</h3>
-
-            <p className="text-xl text-[#00D4FF] mt-2">
+            <div style={{ color: "#00D4FF", fontSize: 14 }}>{title}</div>
+            <div style={{ fontSize: 24, marginTop: 8 }}>
                 {value}
-            </p>
-
+            </div>
         </div>
     );
 }
