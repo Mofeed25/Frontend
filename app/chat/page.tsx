@@ -12,6 +12,8 @@ export default function Chat() {
 
     async function send() {
 
+        if (!msg.trim()) return;
+
         try {
 
             const res = await sendMessage(
