@@ -9,37 +9,18 @@ import { getTenant } from "../../lib/tenant";
 export default function Dashboard() {
 
     const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
         async function load() {
 
-            try {
+            const res = await sendMessage(
+                "تحليل مالي شامل",
+                undefined,
+                getTenant()
+            );
 
-                const res = await sendMessage(
-                    "تحليل مالي شامل",
-                    undefined,
-                    getTenant()
-                );
-
-                setData(res);
-
-            } catch (err) {
-
-                setData({
-                    answer: {
-                        financial: {
-                            "إجمالي الإيرادات (المبيعات)": 0,
-                            "إجمالي صافي الأرباح": 0,
-                            "معدل دوران المخزون (Turnover Ratio)": 0
-                        }
-                    }
-                });
-
-            } finally {
-                setLoading(false);
-            }
+            setData(res?.answer?.financial || {});
         }
 
         load();
@@ -49,34 +30,27 @@ export default function Dashboard() {
     return (
         <ProtectedRoute>
 
-            <div className="p-8">
+            <div style={{ padding: 24 }}>
 
-                <h1 className="text-[#00D4FF] text-2xl">
-                    Dashboard
+                <h1 style={{ color: "#00D4FF", fontSize: 24 }}>
+                    SolarMindAI Dashboard
                 </h1>
 
-                {loading ? (
-                    <p className="text-gray-400 mt-6">جاري تحميل البيانات...</p>
-                ) : (
-                    <div className="grid grid-cols-3 gap-6 mt-6">
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: 16,
+                    marginTop: 20
+                }}>
 
-                        <KPI
-                            title="الإيرادات"
-                            value={data?.answer?.financial?.["إجمالي الإيرادات (المبيعات)"] || 0}
-                        />
+                    <KPI title="الإيرادات" value={data?.revenue || 0} />
+                    <KPI title="الربح" value={data?.profit || 0} />
+                    <KPI title="الدوران" value={data?.turnover || 0} />
+                    <KPI title="النقدي" value={data?.cash_sales || 0} />
+                    <KPI title="الآجل" value={data?.credit_sales || 0} />
+                    <KPI title="نسبة الديون" value={data?.debt_ratio || 0} />
 
-                        <KPI
-                            title="الربح"
-                            value={data?.answer?.financial?.["إجمالي صافي الأرباح"] || 0}
-                        />
-
-                        <KPI
-                            title="الدوران"
-                            value={data?.answer?.financial?.["معدل دوران المخزون (Turnover Ratio)"] || 0}
-                        />
-
-                    </div>
-                )}
+                </div>
 
             </div>
 
