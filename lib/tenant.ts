@@ -1,7 +1,4 @@
-export function setTenant(id: string) {
-    localStorage.setItem("tenant_id", id);
-}
-
 export function getTenant() {
+    if (typeof window === "undefined") return "default";
     return localStorage.getItem("tenant_id") || "default";
 }
